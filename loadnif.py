@@ -3,6 +3,7 @@ import nibabel as nib
 import numpy as np 
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import cv2 
 
 
 
@@ -57,18 +58,36 @@ return segmented slices individually for every specific image
 """
 #################################################################################
 
-imgRe = loadNifti('../training/patient001/patient001_frame12.nii.gz')
-imgGT = loadNifti('../training/patient001/patient001_frame12_gt.nii.gz')
+img4D = loadNifti('../training/patient001/patient001_4d.nii.gz')
+imgES= loadNifti('../training/patient001/patient001_frame12.nii.gz')
+imgED =loadNifti('../training/patient001/patient001_frame01.nii.gz') 
+imgESGT = loadNifti('../training/patient001/patient001_frame12_gt.nii.gz')
+strokeVolume = imgED[:,:,5] - imgES[:,:,5]
+####################################################################333
+#........... Create Training Set...........................
 
-print(imgRe.shape , imgGT.shape)
-#displayAnimatedNifti(imgRe,5)
+#################################################################3
+slice1Copy = np.uint8(imgESGT[:,:,6])
+#ss = cv2.cvtColor(slice1Copy, cv2.COLOR_BGR2GRAY)
+edgedImg = cv2.Canny(slice1Copy,0,1)
 
-#getSlice(imgRe,9)
-for i in range(imgGT.shape[2]):
-    displaySlices(imgGT,i) 
+arrayIndex = np.where(edgedImg > 0)
+listOfCoordinates = list(zip(arrayIndex[0], arrayIndex[1]))
+arr = np.array(listOfCoordinates)
+#print('shape : ', arrayIndex.shape,'values : ', arrayIndex)
+#finalArr = np.concatenate(arrayIndex[0] , arrayIndex[1])
+print(listOfCoordinates[336])
+
+
+
+
+#displaySlices(imgED,1)
+#plt.imshow(edgedImg)
+#plt.show()
+#for i in range(imgGT.shape[2]):
+    #displaySlices(imgGT,i) 
 #displaySegmentedGTSlices(imgRe,5)
 
-#print(imgGT.shape)
 
 
 
@@ -77,51 +96,3 @@ for i in range(imgGT.shape[2]):
 
 
 
-"""
-def show_slices(slices):
-    fig, axes = plt.subplots(1,len(slices))
-    
-    for i, slice in enumerate(slices):
-        axes[i].imshow(slice.T, cmap="gray", origin="lower")
-        
-"""        
-
-"""
-plt.imshow(trainingImg2[:,:,6]) # show the segmented slices 
-plt.show()
-"""
-#array = np.asarray(trainingImg1)
-#arraych = np.reshape(array, [216,256,1])
-"""
-slice_0 = trainingImg1[:, :, 0,29]
-slice_1 = trainingImg1[:, :, 1,29]
-slice_2 = trainingImg1[:, :, 2,29]
-slice_3 = trainingImg1[:, :, 3,29]
-slice_4 = trainingImg1[:, :, 4,29]
-slice_5 = trainingImg1[:, :, 5,29]
-slice_6 = trainingImg1[:, :, 6,29]
-slice_7 = trainingImg1[:, :, 7,29]
-slice_8 = trainingImg1[:, :, 8,29]
-slice_9 = trainingImg1[:, :, 9,29]
-"""
-
-#print(slicePat1[0])
-
-
-
-
-#cmap=plt.get_cmap('jet')
-
-
-
-
-#ani = animation.FuncAnimation(fig, updatefig, frames=range(20), 
-                          #    interval=50, blit=True)
-
-
-
-"""
-for y in range(29):
-    plt.imshow(slicePat1[y])
-    plt.show()
-"""
