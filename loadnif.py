@@ -78,6 +78,29 @@ arr = np.array(listOfCoordinates)
 #finalArr = np.concatenate(arrayIndex[0] , arrayIndex[1])
 print(listOfCoordinates[336])
 
+def loadAllNifti(root , file): # this class returns nifti image array numpy type
+    path =  root + '/' + file 
+    img1 = nib.load(path)
+    trainingImg = img1.get_fdata() # 4d, to show the animated cardiac image
+    return trainingImg
+
+
+def LoadAllGT():
+    path = '../training/'
+    i = 0
+    for root, dirs, files in os.walk(path):
+      
+        for name in files:
+            print(files[2:3])
+            i = i + 1 
+            #trainingImg = loadAllNifti(root,files[3:4].pop())
+            #displaySlices(trainingImg, 1)
+            break
+    print(i)
+
+
+LoadAllGT()
+
 
 
 
