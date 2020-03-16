@@ -16,6 +16,13 @@ def loadNifti(path): # this class returns nifti image array numpy type
     img1 = nib.load(path)
     trainingImg = img1.get_fdata() # 4d, to show the animated cardiac image
     return trainingImg 
+
+
+def loadAllNifti(root , file): # this class returns nifti image array numpy type
+    path =  root + '/' + file 
+    img1 = nib.load(path)
+    trainingImg = img1.get_fdata() # 4d, to show the animated cardiac image
+    return trainingImg     
 ###########################################################################
 
 def displayAnimatedNifti(niftiImage, sliceNum1):
@@ -66,19 +73,32 @@ strokeVolume = imgED[:,:,5] - imgES[:,:,5]
 ####################################################################333
 #........... Create Training Set...........................
 
-#################################################################3
-slice1Copy = np.uint8(imgESGT[:,:,6])
-#ss = cv2.cvtColor(slice1Copy, cv2.COLOR_BGR2GRAY)
-edgedImg = cv2.Canny(slice1Copy,0,1)
+def LoadAllGT():
+    path = '../training/'
+    i = 0
+    for root, dirs, files in os.walk(path):
+        for name in files:
+            print(files[3:4]) 
+            ss = loadAllNifti(root,files[3:4].pop())
+            displaySlices(ss, 1)
+            break
+    print(i)    
+        
+            
 
-arrayIndex = np.where(edgedImg > 0)
-listOfCoordinates = list(zip(arrayIndex[0], arrayIndex[1]))
-arr = np.array(listOfCoordinates)
+#################################################################3
+#slice1Copy = np.uint8(imgESGT[:,:,6])
+#ss = cv2.cvtColor(slice1Copy, cv2.COLOR_BGR2GRAY)
+#edgedImg = cv2.Canny(slice1Copy,0,1)
+
+#arrayIndex = np.where(edgedImg > 0)
+#listOfCoordinates = list(zip(arrayIndex[0], arrayIndex[1]))
+#arr = np.array(listOfCoordinates)
 #print('shape : ', arrayIndex.shape,'values : ', arrayIndex)
 #finalArr = np.concatenate(arrayIndex[0] , arrayIndex[1])
-print(listOfCoordinates[336])
+#print(listOfCoordinates[336])
 
-
+LoadAllGT()
 
 
 #displaySlices(imgED,1)
