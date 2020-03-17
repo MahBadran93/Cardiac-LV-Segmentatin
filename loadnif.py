@@ -4,6 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import cv2 
+import TrainingSet as train
 
 
 
@@ -72,38 +73,32 @@ imgESGT = loadNifti('../training/patient001/patient001_frame12_gt.nii.gz')
 strokeVolume = imgED[:,:,5] - imgES[:,:,5]
 ####################################################################333
 #........... Create Training Set...........................
-
+shapeList = []
 def LoadAllGT():
+    t = 0
     path = '../training/'
-    i = 0
-    for root, dirs, files in os.walk(path):
-        for name in files:
-            print(files[3:4]) 
-            ss = loadAllNifti(root,files[3:4].pop())
-            displaySlices(ss, 1)
-            break
-    print(i)    
-        
+    for root, dirs, files in os.walk(path): # 100 iteration, num of patients in training Folder
+        dirs.sort()
+        files.sort()
+       
+        for name in files: # iterate 6 times, depends on num of files 
+            sliceGT1 = loadAllNifti(root,files[3:4].pop())
+            sliceGT2 = loadAllNifti(root, files[5:6].pop())
+
+            for i in range(sliceGT1.shape[2]): # itereate depends on num of slices
+                shapeList.append(train.shapeLandMark(sliceGT1,i)) # array of positions(landmarks)(337 row ,2 column), vector in our shape 
+            for i in range(sliceGT2.shape[2]):
+                shapeList.append(train.shapeLandMark(sliceGT2,i))
+            break # this to not go to next files 
+    tes = np.array(shapeList)    
+    finalShapeArr = np.stack(tes, axis=0 )  
+
+    return finalShapeArr
+print(LoadAllGT().shape)        
             
 
-#################################################################3
-#slice1Copy = np.uint8(imgESGT[:,:,6])
-#ss = cv2.cvtColor(slice1Copy, cv2.COLOR_BGR2GRAY)
-#edgedImg = cv2.Canny(slice1Copy,0,1)
+#################################################################
 
-#arrayIndex = np.where(edgedImg > 0)
-#listOfCoordinates = list(zip(arrayIndex[0], arrayIndex[1]))
-#arr = np.array(listOfCoordinates)
-#print('shape : ', arrayIndex.shape,'values : ', arrayIndex)
-#finalArr = np.concatenate(arrayIndex[0] , arrayIndex[1])
-#print(listOfCoordinates[336])
-
-LoadAllGT()
-
-
-#displaySlices(imgED,1)
-#plt.imshow(edgedImg)
-#plt.show()
 #for i in range(imgGT.shape[2]):
     #displaySlices(imgGT,i) 
 #displaySegmentedGTSlices(imgRe,5)
