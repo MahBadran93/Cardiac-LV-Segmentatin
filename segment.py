@@ -6,12 +6,30 @@ from scipy import ndimage
 from sklearn.cluster import KMeans
 import mpmath as math 
 from sympy.geometry import *
+import loadnif as nf
+from skimage.color import rgb2gray
+import imageio as save 
 
 
 
 
+imgESGT = nf.loadNifti('../training/patient003/patient003_frame15_gt.nii.gz')
 
+for i in range(imgESGT.shape[2]):
+    slice1Copy = np.uint8(imgESGT[:,:,i])
+    gray = cv2.medianBlur(slice1Copy, 5)
+    edgedImg = cv2.Canny(gray,0,1)
+    circles = cv2.HoughCircles(edgedImg,cv2.HOUGH_GRADIENT,1,int(imgESGT[:,:,i].shape[0]/6),param1=100,param2=30,minRadius=0,maxRadius=0)
+    circles	= np.uint16(np.around(circles))
+    for	n in circles[0,:]:
+	    cv2.circle(edgedImg,(n[0],n[1]),n[2],(255,255,0),2)
+	    cv2.circle(edgedImg,(n[0],n[1]),2,(255,0,255),2)
+    cv2.imshow("HoughCirlces",	edgedImg)
+    cv2.waitKey(1000)
+        
+    
 
+"""
 testImage = cv2.imread('1.jpeg')
 edgeImg = cv2.imread('index.png')
 ss = np.array(testImage)
@@ -60,3 +78,4 @@ plt.imshow(cluster_pic)
 
 #print(clusterdPic.shape)
 #plt.show()
+"""

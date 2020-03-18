@@ -94,7 +94,8 @@ def LoadAllGT():
     finalShapeArr = np.stack(tes, axis=0 )  
 
     return finalShapeArr
-print(LoadAllGT().shape)        
+
+#print(LoadAllGT().shape)        
             
 
 #################################################################
