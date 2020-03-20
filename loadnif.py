@@ -5,10 +5,8 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import cv2 
 import TrainingSet as train
-
-
-
 from nibabel.testing import data_path 
+import segment as seg
 
 
 #########################################################################
@@ -74,6 +72,7 @@ strokeVolume = imgED[:,:,5] - imgES[:,:,5]
 ####################################################################333
 #........... Create Training Set...........................
 shapeList = []
+listCoords = []
 def LoadAllGT():
     t = 0
     path = '../training/'
@@ -84,17 +83,21 @@ def LoadAllGT():
         for name in files: # iterate 6 times, depends on num of files 
             sliceGT1 = loadAllNifti(root,files[3:4].pop())
             sliceGT2 = loadAllNifti(root, files[5:6].pop())
-
+            
             for i in range(sliceGT1.shape[2]): # itereate depends on num of slices
-                shapeList.append(train.shapeLandMark(sliceGT1,i)) # array of positions(landmarks)(337 row ,2 column), vector in our shape 
+                #shapeList.append(seg.segmentGTEndy(sliceGT1,i)) # array of positions(landmarks)(337 row ,2 column), vector in our shape
+                listCoords.append(seg.segmentGTEndy(sliceGT1,i).shape)
+    np.savetxt('Data_SET_GT_DIM', listCoords, delimiter='')
+    """
             for i in range(sliceGT2.shape[2]):
-                shapeList.append(train.shapeLandMark(sliceGT2,i))
+                shapeList.append(seg.segmentGTEndy(sliceGT2,i))
             break # this to not go to next files 
     tes = np.array(shapeList)    
     finalShapeArr = np.stack(tes, axis=0 )  
-
-    return finalShapeArr
-
+    print(finalShapeArr.shape)
+    """
+    #return finalShapeArr
+LoadAllGT()
 #print(LoadAllGT().shape)        
             
 
