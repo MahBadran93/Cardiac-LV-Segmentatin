@@ -75,6 +75,7 @@ shapeList = []
 listCoords = []
 listOfDim = []
 def LoadAllGT():
+
     path = '../training/'
     for root, dirs, files in os.walk(path): # 100 iteration, num of patients in training Folder
         dirs.sort()
@@ -98,15 +99,15 @@ def LoadAllGT():
                 #listCoords.append(seg.segmentGTEndy(sliceGT2,i).shape)
                 #print(listCoords)
             break
-
+        
 #return finalShapeArr
 LoadAllGT()
-
-
-
-plt.plot(shapeList[99], '.')
+#print(np.array(shapeList[1800])[:,1])
+                
+plt.plot(np.array(shapeList[4])[:,0], np.array(shapeList[4])[:,1], '.')
 plt.axis([-500, 500, -500, 500])
 plt.show()
+
 
 #print(LoadAllGT().shape)        
             
