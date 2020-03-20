@@ -67,37 +67,47 @@ return segmented slices individually for every specific image
 img4D = loadNifti('../training/patient001/patient001_4d.nii.gz')
 imgES= loadNifti('../training/patient001/patient001_frame12.nii.gz')
 imgED =loadNifti('../training/patient001/patient001_frame01.nii.gz') 
-imgESGT = loadNifti('../training/patient001/patient001_frame12_gt.nii.gz')
+imgESGT = loadNifti('../training/patient002/patient002_frame12_gt.nii.gz')
 strokeVolume = imgED[:,:,5] - imgES[:,:,5]
 ####################################################################333
 #........... Create Training Set...........................
 shapeList = []
 listCoords = []
+listOfDim = []
 def LoadAllGT():
-    t = 0
     path = '../training/'
     for root, dirs, files in os.walk(path): # 100 iteration, num of patients in training Folder
         dirs.sort()
         files.sort()
-       
         for name in files: # iterate 6 times, depends on num of files 
             sliceGT1 = loadAllNifti(root,files[3:4].pop())
             sliceGT2 = loadAllNifti(root, files[5:6].pop())
-            
-            for i in range(sliceGT1.shape[2]): # itereate depends on num of slices
-                #shapeList.append(seg.segmentGTEndy(sliceGT1,i)) # array of positions(landmarks)(337 row ,2 column), vector in our shape
-                listCoords.append(seg.segmentGTEndy(sliceGT1,i).shape)
-    np.savetxt('Data_SET_GT_DIM', listCoords, delimiter='')
-    """
-            for i in range(sliceGT2.shape[2]):
+
+
+            # itereate depends on num of slices
+            for i in range (sliceGT1.shape[2]):
+                shapeList.append(seg.segmentGTEndy(sliceGT1,i)) 
+                listOfDim.append(len(shapeList[i]))
+                # array of positions(landmarks)(337 row ,2 column), vector in our shape
+                #listCoords.append(seg.segmentGTEndy(sliceGT1,i).shape)
+            for i in range (sliceGT2.shape[2]):
                 shapeList.append(seg.segmentGTEndy(sliceGT2,i))
-            break # this to not go to next files 
-    tes = np.array(shapeList)    
-    finalShapeArr = np.stack(tes, axis=0 )  
-    print(finalShapeArr.shape)
-    """
-    #return finalShapeArr
+                #print(shapeList[i].shape)
+                listOfDim.append(len(shapeList[i]))
+
+                #listCoords.append(seg.segmentGTEndy(sliceGT2,i).shape)
+                #print(listCoords)
+            break
+
+#return finalShapeArr
 LoadAllGT()
+
+
+
+plt.plot(shapeList[99], '.')
+plt.axis([-500, 500, -500, 500])
+plt.show()
+
 #print(LoadAllGT().shape)        
             
 
@@ -106,12 +116,3 @@ LoadAllGT()
 #for i in range(imgGT.shape[2]):
     #displaySlices(imgGT,i) 
 #displaySegmentedGTSlices(imgRe,5)
-
-
-
-
-
-
-
-
-
