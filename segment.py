@@ -12,18 +12,45 @@ import imageio as save
 
 
 
-
 imgESGT = nf.loadNifti('../training/patient003/patient003_frame15_gt.nii.gz')
 
 for i in range(imgESGT.shape[2]):
     slice1Copy = np.uint8(imgESGT[:,:,i])
-    gray = cv2.medianBlur(slice1Copy, 5)
-    edgedImg = cv2.Canny(gray,0,1)
-    circles = cv2.HoughCircles(edgedImg,cv2.HOUGH_GRADIENT,1,int(imgESGT[:,:,i].shape[0]/6),param1=100,param2=30,minRadius=0,maxRadius=0)
+    #gray = cv2.medianBlur(slice1Copy, 5)
+    edgedImg = cv2.Canny(slice1Copy,0,1)
+    #ret, th_img = cv2.threshold(edgedImg, thresh=1, maxval=255, type=cv2.THRESH_BINARY)
+
+    circles = cv2.HoughCircles(edgedImg,cv2.HOUGH_GRADIENT,1,int(imgESGT[:,:,i].shape[0]/6),param1=100,param2=30,minRadius=10,maxRadius=40)
     circles	= np.uint16(np.around(circles))
+    for x,y,r in circles[0, :]:
+        print('x, y, r:', x, y, r)
+        border = 2
+
+        cv2.circle(edgedImg, (x, y), r, (255, 0, 255), border)
+        cv2.circle(edgedImg, (x, y), 2, (0, 0, 255), 3)
+
+        height, width = edgedImg.shape
+        print('height, width:', height, width)
+
+                    # calculate region to crop
+        x1 = max(x-r - border//2, 0)      # eventually  -(border//2+1)
+        x2 = min(x+r + border//2, width)  # eventually  +(border//2+1)
+        y1 = max(y-r - border//2, 0)      # eventually  -(border//2+1)
+        y2 = min(y+r + border//2, height) # eventually  +(border//2+1)
+        print('x1, x2:', x1, x2)
+        print('y1, y2:', y1, y2)
+
+        # crop image 
+        image = edgedImg[y1:y2,x1:x2]
+        print('height, width:', image.shape)
+
+    #test_circ = np.int16(np.around(circles))
+    #s = edgedImg[test_circ[0,0,1]-test_circ[0,0,2]:test_circ[0,0,1]+test_circ[0,0,2], test_circ[0,0,0]-test_circ[0,0,2]:test_circ[0,0,0]+test_circ[0,0,2]]
+
+    """
     for	n in circles[0,:]:
-	    cv2.circle(edgedImg,(n[0],n[1]),n[2],(255,255,0),2)
-	    cv2.circle(edgedImg,(n[0],n[1]),2,(255,0,255),2)
+	    t = cv2.circle(edgedImg,(n[0],n[1]),n[2],(255,255,0),2)
+    """
     cv2.imshow("HoughCirlces",	edgedImg)
     cv2.waitKey(1000)
         
