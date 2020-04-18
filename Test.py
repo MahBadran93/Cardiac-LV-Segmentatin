@@ -1,4 +1,4 @@
-import AutomateLandMarks as landMarks
+from AutomateLandMarks import  LandMarks
 import saveDataSet as saveData
 import loadnif as nif
 import numpy as np
@@ -19,19 +19,35 @@ imgESGT1 = nif.loadNifti('../training/patient002/patient002_frame01_gt.nii.gz')
 #plt.plot(np.array(landMarks.getLandMarksCoords()[2])[:,0], np.array(landMarks.getLandMarksCoords()[2])[:,1], '.')
 #plt.axis([-216, 304, -216, 304])
 #plt.show()
-saveData.saveDataSet()
+#.....................Save png of images .........................
+#saveData.saveDataSet()
 
+showLand = LandMarks()
+shapeList,shapeCentroids = showLand.getLandMarksCoords()
 
 
 """
 listDim = []
+count = 0
+
+swap = len(shapeList[3])
 for i in range(len(shapeList)):
     listDim.append(len(shapeList[i]))
-np.savetxt('content/Dim.txt',listDim , fmt='%s')
+    if(len(shapeList[i])!=0 and len(shapeList[i])!=4 and len(shapeList[i])!=7 and len(shapeList[i])!=9):
+        if(len(shapeList[i]) < swap):
+            swap = len(shapeList[i])
+            count = i
+
+print(count, shapeList[count])
+"""         
+#np.savetxt('content/nCentroids.txt',shapeList , fmt='%s')
+#np.savetxt('content/listDim.txt',listDim , fmt='%s')
+#np.savetxt('content/nCentroids.txt',shapeCentroids , fmt='%s')
+
 
 print(len(shapeList))
 #print(LoadAllGT().shape)        
-""" 
+ 
 
 #################################################################
 """
@@ -49,7 +65,7 @@ x4.set_title('plotted x,y coords extracted from shape')
 x4.imshow(coords)
 """
 
-plt.show()
+#plt.show()
 
 #for i in range(imgGT.shape[2]):
     #displaySlices(imgGT,i) 

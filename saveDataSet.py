@@ -14,12 +14,12 @@ shapeList = []
 i = 0
 def SaveToFolder(gtImage,sliceNum, imgNumFolder):
     sampledImg = preProc.SampleTest1(gtImage[:,:,sliceNum])
-    print(sampledImg.GetSpacing())
+    #print(sampledImg.GetSpacing())
     sampledImgArr = sitk.GetArrayFromImage(sampledImg)
     #slice1Copy = np.uint8(sampledImgArr)
     path = './TrainingImages'
-    #cv2.imwrite(os.path.join(path , 'testImage{0}.png'.format(imgNumFolder)), sampledImgArr)
-    #cv2.waitKey(0)
+    cv2.imwrite(os.path.join(path , 'testImage{0}.png'.format(imgNumFolder)), sampledImgArr)
+    cv2.waitKey(0)
 
     #cv2.imshow('mmm', slice1Copy)
     #cv2.waitKey(500)

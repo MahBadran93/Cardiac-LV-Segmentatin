@@ -15,6 +15,8 @@ from PIL import Image
 referenceImg = sitk.ReadImage('../training/patient001/patient001_frame01_gt.nii.gz')
 
 
+
+
 def SampleTest1(img):
    
     dimension = referenceImg[:,:,1].GetDimension()
