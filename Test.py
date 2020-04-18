@@ -4,6 +4,9 @@ import loadnif as nif
 import numpy as np
 import matplotlib.pyplot as plt
 import cv2
+import  shapely as shp
+import shapely.geometry as gmt
+import pylab as pl
 
 #.............................Testing.....................................................
 
@@ -26,6 +29,28 @@ showLand = LandMarks()
 shapeList,shapeCentroids = showLand.getLandMarksCoords()
 
 
+#coords = [p[:][0] for p in shapeList[500]]
+
+#x = np.array(shapeList[500])[:,0]
+#y = np.array(shapeList[500])[:,1]
+x1 = [p[0] for p in shapeList[500]]
+y1 = [p[1] for p in shapeList[500]]
+plt.plot(x1,y1,'.')
+poly = gmt.Polygon([p[0],p[1]] for p in shapeList[500])
+#x,y = poly.exterior.xy
+x,y = poly.convex_hull.exterior.coords.xy
+plt.plot(x,y)
+plt.show()
+#pl.figure(figsize=(10,10))
+#_ = pl.plot(poly,'o', color='#f16824')
+
+#polygon = gmt.Polygon([[0, 0], [1, 0], [1, 1], [0, 1]])
+#points = np.array(polygon)
+
+
+
+
+
 """
 listDim = []
 count = 0
@@ -45,7 +70,6 @@ print(count, shapeList[count])
 #np.savetxt('content/nCentroids.txt',shapeCentroids , fmt='%s')
 
 
-print(len(shapeList))
 #print(LoadAllGT().shape)        
  
 
