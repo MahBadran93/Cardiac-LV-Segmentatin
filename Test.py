@@ -55,7 +55,12 @@ def findCentroid(x,y):
     length = len(x)
     sum_x = np.sum(x)
     sum_y = np.sum(y)
-    return [np.round(sum_x/length), np.round(sum_y/length)] # returm coords of the centroid for each shape 
+    return np.round(sum_x/length), np.round(sum_y/length) # returm coords of the centroid for each shape 
+
+
+
+
+
 
 for i in range(len( shapeList)):
     if(len(shapeList[i]) !=0):
@@ -65,13 +70,16 @@ for i in range(len( shapeList)):
         #print('shapeCentroid',findCentroid(x1,y1))
         #plt.plot(x1,y1,'.')
         poly = gmt.Polygon([p[0],p[1]] for p in shapeList[i])
+        #x,y = poly.exterior.coords.xy
+        
         x,y = poly.convex_hull.exterior.coords.xy
-        print('length',len(x),'length2',len(x1))
-        #plt.axis([-216, 304, -216, 304])
-        #plt.plot(x,y)
+        #print(30-len(x))
+        plt.axis([-216, 304, -216, 304])
+        plt.plot(x,y)
+        print(findCentroid(x,y))
         #t,y = poly.convex_hull.coords.xy
         #t,n = poly.contour.exterior.coords.xy
-        #plt.show()
+        plt.show()
     else:
         print('empty shape')
 
