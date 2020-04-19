@@ -16,7 +16,11 @@ class LandMarks():
     def __init__(self):
         self.shapeList = [] # list to include all the shapes coords
         self.shapeCentroids = []
-        c=0
+        self.count = 0
+        self.fixedCentroidS = []
+        self.listOfIndex = []
+        self.translatedShape = []
+        
         # reteurn segmented GT image(segment only endocardium) 
     
     
@@ -29,17 +33,36 @@ class LandMarks():
         newedgedImg = cv2.Canny(slice1Copy,0,1)
         #cv2.imshow('patient',newedgedImg)
         #cv2.waitKey(1000)
+        self.listOfIndex = np.argwhere(newedgedImg !=0)
+        """
+        if(self.count == 2):
+            print('list',self.listOfIndex)
+            self.fixedCentroidS = self.findCentroid(self.listOfIndex) # Create fixed Centroid for all iages 
+        self.count += 1
+        
+        if(len(self.listOfIndex) > 2):
+            print('list',self.listOfIndex)
+            self.translatedShape = self.translateShapesToFixedCentroid(self.fixedCentroidS,self.listOfIndex)
+            #print(self.findCentroid(translatedShape))
+         """   
+        return self.listOfIndex # return all coordinates of the shape 
     
-        listOfIndex = np.argwhere(newedgedImg !=0)
-        return listOfIndex # return all coordinates of the shape 
-    
-    def findCentroid(self, img):
-        length = img.shape[0] # the same length 128,128 size of the image
-        sum_x = np.sum(img[:, 0])
-        sum_y = np.sum(img[:, 1])
+    def findCentroid(self, imgShape):
+        
+        length = np.array(imgShape).shape[0] # the same length (128,128) size of the image
+        sum_x = np.sum(imgShape[:, 0])
+        sum_y = np.sum(imgShape[:, 1])
         return [np.round(sum_x/length), np.round(sum_y/length)] # returm coords of the centroid for each shape 
-
-  
+    """
+    def translateShapesToFixedCentroid(self,FixedshapeCentroid, shape):
+        # FixedshapeCentroid : Fixed Centroid Value , i.e : (120,120).
+        # shape : the shape to center around FixedshapeCentroid. 
+        subtractValue = np.subtract(np.array(FixedshapeCentroid),self.findCentroid(shape))
+               
+        translatedShpe = np.add(shape,subtractValue)
+        return translatedShpe # return a translated shape around a specific fixed centroid for all shapes 
+    """        
+        
         
     
     def getLandMarksCoords(self):
@@ -56,6 +79,7 @@ class LandMarks():
                 # itereate depends on num of slices
                 for i in range (sliceGT1.GetSize()[2]): #sliceGT1.shape[2]
                     #shapeList.append(segmentGTEndy(sliceGT1,i))
+
                     self.shapeList.append(self.segmentGTEndy(sliceGT1,i))
                     self.shapeCentroids.append(self.findCentroid(self.segmentGTEndy(sliceGT1,i))) 
                     # array of positions(landmarks)(337 row ,2 column), vector in our shape

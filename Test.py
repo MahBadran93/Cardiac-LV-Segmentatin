@@ -25,6 +25,10 @@ imgESGT1 = nif.loadNifti('../training/patient002/patient002_frame01_gt.nii.gz')
 #.....................Save png of images .........................
 #saveData.saveDataSet()
 
+fff = np.array([[1,2],[3,4],[5,6]])
+ttt = np.add(fff,[1,1])
+print(ttt)
+
 showLand = LandMarks()
 shapeList,shapeCentroids = showLand.getLandMarksCoords()
 
@@ -33,17 +37,45 @@ shapeList,shapeCentroids = showLand.getLandMarksCoords()
 
 #x = np.array(shapeList[500])[:,0]
 #y = np.array(shapeList[500])[:,1]
-x1 = [p[0] for p in shapeList[500]]
-y1 = [p[1] for p in shapeList[500]]
+"""
+plt.figure()
+x1 = [p[0] for p in shapeList[120]]
+y1 = [p[1] for p in shapeList[120]]
 plt.plot(x1,y1,'.')
-poly = gmt.Polygon([p[0],p[1]] for p in shapeList[500])
-#x,y = poly.exterior.xy
+poly = gmt.Polygon([p[0],p[1]] for p in shapeList[120])
 x,y = poly.convex_hull.exterior.coords.xy
-plt.plot(x,y)
+#t,y = poly.convex_hull.coords.xy
+#t,n = poly.contour.exterior.coords.xy
+plt.plot(x,y)    
 plt.show()
 #pl.figure(figsize=(10,10))
 #_ = pl.plot(poly,'o', color='#f16824')
+"""
+def findCentroid(x,y):
+    length = len(x)
+    sum_x = np.sum(x)
+    sum_y = np.sum(y)
+    return [np.round(sum_x/length), np.round(sum_y/length)] # returm coords of the centroid for each shape 
 
+for i in range(len( shapeList)):
+    if(len(shapeList[i]) !=0):
+        #plt.figure()
+        x1 = [p[0] for p in shapeList[i]]
+        y1 = [p[1] for p in shapeList[i]]
+        #print('shapeCentroid',findCentroid(x1,y1))
+        #plt.plot(x1,y1,'.')
+        poly = gmt.Polygon([p[0],p[1]] for p in shapeList[i])
+        x,y = poly.convex_hull.exterior.coords.xy
+        print('length',len(x),'length2',len(x1))
+        #plt.axis([-216, 304, -216, 304])
+        #plt.plot(x,y)
+        #t,y = poly.convex_hull.coords.xy
+        #t,n = poly.contour.exterior.coords.xy
+        #plt.show()
+    else:
+        print('empty shape')
+
+    
 #polygon = gmt.Polygon([[0, 0], [1, 0], [1, 1], [0, 1]])
 #points = np.array(polygon)
 
