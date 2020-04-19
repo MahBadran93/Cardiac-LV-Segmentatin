@@ -7,6 +7,7 @@ import cv2
 import  shapely as shp
 import shapely.geometry as gmt
 import pylab as pl
+import  scipy as sc
 
 #.............................Testing.....................................................
 
@@ -58,7 +59,21 @@ def findCentroid(x,y):
     return np.round(sum_x/length), np.round(sum_y/length) # returm coords of the centroid for each shape 
 
 
-
+def single_parametric_interpolate(obj_x_loc,obj_y_loc,numPts=50):
+    n = len(obj_x_loc)
+    vi = [[obj_x_loc[(i+1)%n] - obj_x_loc[i],
+         obj_y_loc[(i+1)%n] - obj_y_loc[i]] for i in range(n)]
+    si = [np.linalg.norm(v) for v in vi]
+    di = np.linspace(0, sum(si), numPts, endpoint=False)
+    new_points = []
+    for d in di:
+        for i,s in enumerate(si):
+            if d>s: d -= s
+            else: break
+        l = d/s
+        new_points.append([obj_x_loc[i] + l*vi[i][0],
+                           obj_y_loc[i] + l*vi[i][1]])
+    return new_points
 
 
 
@@ -73,14 +88,29 @@ for i in range(len( shapeList)):
         #x,y = poly.exterior.coords.xy
         
         x,y = poly.convex_hull.exterior.coords.xy
+        
+        
+        SampledShape = np.array(single_parametric_interpolate(x,y,numPts=40))
+
+        
+        x_sampled = [p[0] for p in SampledShape]
+        y_sampled = [p[1] for p in SampledShape]
+        
+        #cv2.arcLength(poly.convex_hull.exterior.coords.xy,True)
+        #print(cv2.arcLength(poly.convex_hull.exterior,True))
+        #ss = sc.interpolate.NearestNDInterpolator((x,y),x)
+        
         #print(30-len(x))
         plt.axis([-216, 304, -216, 304])
-        plt.plot(x,y)
-        print(findCentroid(x,y))
+        plt.plot(x_sampled,y_sampled)
+        #print(findCentroid(x,y))
+        #print(len(x))
         #t,y = poly.convex_hull.coords.xy
         #t,n = poly.contour.exterior.coords.xy
         plt.show()
-    else:
+        print(len(SampledShape))
+    else:    
+     
         print('empty shape')
 
     
