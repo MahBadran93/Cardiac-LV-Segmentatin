@@ -115,13 +115,12 @@ class LandMarks():
                     #listCoords.append(seg.segmentGTEndy(sliceGT2,i).shape)
                     #print(listCoords)
                 break
-        
         return self.shapeList 
     
     def GenerateSampleShapeList(self):
         
         listInit = self.getLandMarksCoords() #return usampled list of shapes
-        
+        print('ggggg:',len(listInit[8]))
         for i in range(len(listInit)):
             if(len(listInit[i]) !=0):
                 #plt.figure()
@@ -156,7 +155,7 @@ class LandMarks():
             else:    
                 print('empty shape')
                 
-        return self.SampledShapeList    
+        return self.SampledShapeList, listInit   
 
 
 

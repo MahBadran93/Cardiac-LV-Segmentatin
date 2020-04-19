@@ -34,11 +34,29 @@ model = []
 
 showLand = LandMarks()
 #shapeList,shapeCentroids = showLand.getLandMarksCoords()
-model = showLand.GenerateSampleShapeList()
-print(len(model[0]))
-tt = np.stack(model,axis=1 )
-FinalModel = tt.T
-print(tt.shape)
+landMarkedShapes,originalShape = showLand.GenerateSampleShapeList()
+
+
+
+print(len(model), len(originalShape))
+landMarkedShapesR = np.stack(landMarkedShapes,axis=0 )
+LandMarkFinalMatrix =landMarkedShapesR.T
+ 
+for i in range(FinalModel.shape[1]):
+    x1 = FinalModel[:,i,0]
+    y1 = FinalModel[:,i,1]
+   
+    #x = np.array(originalShape[i])[:,0]
+    #y = np.array(originalShape[i])[:,1]
+    
+    #plt.axis([-216, 304, -216, 304])
+
+    #plt.plot(x1,y1)
+    #plt.plot(x1,y1)
+    #plt.show()
+
+#FinalModel = tt.T
+
 #np.savetxt('content/finalModelSampled.txt',finalModel , fmt='%s')
 
 
