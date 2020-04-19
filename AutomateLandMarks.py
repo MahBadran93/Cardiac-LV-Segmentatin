@@ -6,23 +6,25 @@ import cv2
 import PreProcess as preProc
 import matplotlib.pyplot as plt
 import SimpleITK as sitk
-import shapely.geometry as gmt
+from shapely.geometry import Polygon 
 
 
 
 
 
 class LandMarks():
+    # all operation of extracting land mark from the ground truth done in this class
     
     
     def __init__(self):
+        
         self.shapeList = [] # list to include all the shapes coords
-        self.shapeCentroids = []
-        self.count = 0
+        self.shapeCentroids = []  
+        self.count = 0            
         self.fixedCentroidS = []
         self.listOfIndex = []
         self.translatedShape = []
-        self.SampledShapeList = []
+        self.LandmarkedShapes = []
         
         # reteurn segmented GT image(segment only endocardium) 
     
@@ -44,7 +46,15 @@ class LandMarks():
         return new_points
     
     
-    def segmentGTEndy(self,gtImage,sliceNum):
+    def extractContourCoords(self,gtImage,sliceNum):
+        
+        '''
+        gtImage: ground truth image  from End_systolic and End_diastolic 
+        sliceNum: slice number from each volume
+        
+        return position coordinates for each contour
+
+        '''
         #im = sitk.GetArrayFromImage(gtImage[:,:,sliceNum]) 
         #sampledImg = preProc.SampleTest1(gtImage[:,:,sliceNum]) # register the image 
         sampledImgArr = sitk.GetArrayFromImage(gtImage[:,:,sliceNum])
@@ -55,20 +65,13 @@ class LandMarks():
         #cv2.waitKey(1000)
         self.listOfIndex = np.argwhere(newedgedImg !=0)
         
-        if(self.count == 1):
+        if(self.count == 1): # create fixed contour
             self.fixedCentroidS = self.findCentroid(self.listOfIndex) # Create fixed Centroid for all iages 
-        
         self.count += 1
         
-        if(len(self.listOfIndex) > 2):
+        if(len(self.listOfIndex) > 2): # to check shapes with points less than 2.
             self.translatedShape = self.translateShapesToFixedCentroid(self.fixedCentroidS,self.listOfIndex)
             
-        
-        #print(len(self.listOfIndex),len(self.translatedShape))
-        #print(self.fixedCentroidS)
-        #print(self.translatedShape)
-        
-        
         return self.translatedShape # return all coordinates of the shape 
     
     def findCentroid(self, shapeI):
@@ -89,7 +92,7 @@ class LandMarks():
         
         
     
-    def getLandMarksCoords(self):
+    def getShapeCoords(self):
         path = '../training/'
         for root, dirs, files in os.walk(path): # 100 iteration, num of patients in training Folder
             dirs.sort()
@@ -102,32 +105,31 @@ class LandMarks():
                 #print(simpitkImg.GetOrigin()) # to check the image size,spacing,origin
                 # itereate depends on num of slices
                 for i in range (sliceGT1.GetSize()[2]): #sliceGT1.shape[2]
-                    #shapeList.append(segmentGTEndy(sliceGT1,i))
+                    #shapeList.append(extractContourCoords(sliceGT1,i))
 
-                    self.shapeList.append(self.segmentGTEndy(sliceGT1,i))
-                    #self.shapeCentroids.append(self.findCentroid(self.segmentGTEndy(sliceGT1,i))) 
+                    self.shapeList.append(self.extractContourCoords(sliceGT1,i))
+                    #self.shapeCentroids.append(self.findCentroid(self.extractContourCoords(sliceGT1,i))) 
                     # array of positions(landmarks)(337 row ,2 column), vector in our shape
-                    #listCoords.append(seg.segmentGTEndy(sliceGT1,i).shape)
+                    #listCoords.append(seg.extractContourCoords(sliceGT1,i).shape)
                 for i in range (sliceGT2.GetSize()[2]): #
-                    #shapeList.append(segmentGTEndy(sliceGT2,i))
-                    self.shapeList.append(self.segmentGTEndy(sliceGT2,i))
-                    #self.shapeCentroids.append(self.findCentroid(self.segmentGTEndy(sliceGT2,i)))  
-                    #listCoords.append(seg.segmentGTEndy(sliceGT2,i).shape)
+                    #shapeList.append(extractContourCoords(sliceGT2,i))
+                    self.shapeList.append(self.extractContourCoords(sliceGT2,i))
+                    #self.shapeCentroids.append(self.findCentroid(self.extractContourCoords(sliceGT2,i)))  
+                    #listCoords.append(seg.extractContourCoords(sliceGT2,i).shape)
                     #print(listCoords)
                 break
         return self.shapeList 
     
     def GenerateSampleShapeList(self):
         
-        listInit = self.getLandMarksCoords() #return usampled list of shapes
-        print('ggggg:',len(listInit[8]))
+        listInit = self.getShapeCoords() #return usampled list of shapes        
         for i in range(len(listInit)):
             if(len(listInit[i]) !=0):
                 #plt.figure()
                 x1 = [p[0] for p in listInit[i]]
                 y1 = [p[1] for p in listInit[i]]
                 
-                poly = gmt.Polygon([p[0],p[1]] for p in listInit[i])
+                poly = Polygon([p[0],p[1]] for p in listInit[i])
                 
                 x,y = poly.convex_hull.exterior.coords.xy
                 
@@ -137,7 +139,7 @@ class LandMarks():
                 x_sampled = [p[0] for p in SampledShape]
                 y_sampled = [p[1] for p in SampledShape]
                 
-                self.SampledShapeList.append(SampledShape)
+                self.LandmarkedShapes.append(SampledShape)
                 
                 #print(30-len(x))
                 
@@ -155,7 +157,7 @@ class LandMarks():
             else:    
                 print('empty shape')
                 
-        return self.SampledShapeList, listInit   
+        return self.LandmarkedShapes, listInit   
 
 
 

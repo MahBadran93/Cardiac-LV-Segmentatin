@@ -26,25 +26,18 @@ imgESGT1 = nif.loadNifti('../training/patient002/patient002_frame01_gt.nii.gz')
 #.....................Save png of images .........................
 #saveData.saveDataSet()
 
-fff = np.array([[1,2],[3,4],[5,6]])
-ttt = np.add(fff,[1,1])
-print(ttt)
-
-model = []
 
 showLand = LandMarks()
 #shapeList,shapeCentroids = showLand.getLandMarksCoords()
 landMarkedShapes,originalShape = showLand.GenerateSampleShapeList()
 
 
-
-print(len(model), len(originalShape))
 landMarkedShapesR = np.stack(landMarkedShapes,axis=0 )
 LandMarkFinalMatrix =landMarkedShapesR.T
- 
-for i in range(FinalModel.shape[1]):
-    x1 = FinalModel[:,i,0]
-    y1 = FinalModel[:,i,1]
+'''
+for i in range(LandMarkFinalMatrix.shape[1]):
+    x1 = LandMarkFinalMatrix[:,i,0]
+    y1 = LandMarkFinalMatrix[:,i,1]
    
     #x = np.array(originalShape[i])[:,0]
     #y = np.array(originalShape[i])[:,1]
@@ -54,7 +47,8 @@ for i in range(FinalModel.shape[1]):
     #plt.plot(x1,y1)
     #plt.plot(x1,y1)
     #plt.show()
-
+    
+'''
 #FinalModel = tt.T
 
 #np.savetxt('content/finalModelSampled.txt',finalModel , fmt='%s')
