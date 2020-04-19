@@ -30,8 +30,20 @@ fff = np.array([[1,2],[3,4],[5,6]])
 ttt = np.add(fff,[1,1])
 print(ttt)
 
+model = []
+
 showLand = LandMarks()
-shapeList,shapeCentroids = showLand.getLandMarksCoords()
+#shapeList,shapeCentroids = showLand.getLandMarksCoords()
+model = showLand.GenerateSampleShapeList()
+print(len(model[0]))
+tt = np.stack(model,axis=1 )
+FinalModel = tt.T
+print(tt.shape)
+#np.savetxt('content/finalModelSampled.txt',finalModel , fmt='%s')
+
+
+#arrayModel = np.array(model)
+#print(arrayModel.shape)
 
 
 #coords = [p[:][0] for p in shapeList[500]]
@@ -59,7 +71,7 @@ def findCentroid(x,y):
     return np.round(sum_x/length), np.round(sum_y/length) # returm coords of the centroid for each shape 
 
 
-def single_parametric_interpolate(obj_x_loc,obj_y_loc,numPts=50):
+def single_parametric_interpolate(obj_x_loc,obj_y_loc,numPts=60):
     n = len(obj_x_loc)
     vi = [[obj_x_loc[(i+1)%n] - obj_x_loc[i],
          obj_y_loc[(i+1)%n] - obj_y_loc[i]] for i in range(n)]
@@ -76,7 +88,7 @@ def single_parametric_interpolate(obj_x_loc,obj_y_loc,numPts=50):
     return new_points
 
 
-
+"""
 for i in range(len( shapeList)):
     if(len(shapeList[i]) !=0):
         #plt.figure()
@@ -90,7 +102,7 @@ for i in range(len( shapeList)):
         x,y = poly.convex_hull.exterior.coords.xy
         
         
-        SampledShape = np.array(single_parametric_interpolate(x,y,numPts=40))
+        SampledShape = np.array(single_parametric_interpolate(x,y,numPts=30))
 
         
         x_sampled = [p[0] for p in SampledShape]
@@ -103,6 +115,7 @@ for i in range(len( shapeList)):
         #print(30-len(x))
         plt.axis([-216, 304, -216, 304])
         plt.plot(x_sampled,y_sampled)
+        #plt.plot(x,y)
         #print(findCentroid(x,y))
         #print(len(x))
         #t,y = poly.convex_hull.coords.xy
@@ -116,7 +129,7 @@ for i in range(len( shapeList)):
     
 #polygon = gmt.Polygon([[0, 0], [1, 0], [1, 1], [0, 1]])
 #points = np.array(polygon)
-
+"""
 
 
 

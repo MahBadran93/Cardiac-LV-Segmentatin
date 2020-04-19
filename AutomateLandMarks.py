@@ -6,6 +6,8 @@ import cv2
 import PreProcess as preProc
 import matplotlib.pyplot as plt
 import SimpleITK as sitk
+import shapely.geometry as gmt
+
 
 
 
@@ -20,8 +22,26 @@ class LandMarks():
         self.fixedCentroidS = []
         self.listOfIndex = []
         self.translatedShape = []
+        self.SampledShapeList = []
         
         # reteurn segmented GT image(segment only endocardium) 
+    
+    # this function resample each shape to same number of landmarks 
+    def single_parametric_interpolate(self,obj_x_loc,obj_y_loc,numPts=30):
+        n = len(obj_x_loc)
+        vi = [[obj_x_loc[(i+1)%n] - obj_x_loc[i],
+             obj_y_loc[(i+1)%n] - obj_y_loc[i]] for i in range(n)]
+        si = [np.linalg.norm(v) for v in vi]
+        di = np.linspace(0, sum(si), numPts, endpoint=False)
+        new_points = []
+        for d in di:
+            for i,s in enumerate(si):
+                if d>s: d -= s
+                else: break
+            l = d/s
+            new_points.append([obj_x_loc[i] + l*vi[i][0],
+                               obj_y_loc[i] + l*vi[i][1]])
+        return new_points
     
     
     def segmentGTEndy(self,gtImage,sliceNum):
@@ -96,8 +116,47 @@ class LandMarks():
                     #print(listCoords)
                 break
         
-        return self.shapeList, self.shapeCentroids   
+        return self.shapeList 
     
+    def GenerateSampleShapeList(self):
+        
+        listInit = self.getLandMarksCoords() #return usampled list of shapes
+        
+        for i in range(len(listInit)):
+            if(len(listInit[i]) !=0):
+                #plt.figure()
+                x1 = [p[0] for p in listInit[i]]
+                y1 = [p[1] for p in listInit[i]]
+                
+                poly = gmt.Polygon([p[0],p[1]] for p in listInit[i])
+                
+                x,y = poly.convex_hull.exterior.coords.xy
+                
+                
+                SampledShape = np.array(self.single_parametric_interpolate(x,y,numPts=30))
+                
+                x_sampled = [p[0] for p in SampledShape]
+                y_sampled = [p[1] for p in SampledShape]
+                
+                self.SampledShapeList.append(SampledShape)
+                
+                #print(30-len(x))
+                
+                #plt.axis([-216, 304, -216, 304])
+                #plt.plot(x_sampled,y_sampled)
+                
+                #plt.plot(x,y)
+                #print(findCentroid(x,y))
+                #print(len(x))
+                #t,y = poly.convex_hull.coords.xy
+                #t,n = poly.contour.exterior.coords.xy
+                
+                #plt.show()
+                #print(len(SampledShape))
+            else:    
+                print('empty shape')
+                
+        return self.SampledShapeList    
 
 
 
