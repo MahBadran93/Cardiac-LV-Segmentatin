@@ -9,6 +9,8 @@ import shapely.geometry as gmt
 import pylab as pl
 import  scipy as sc
 
+from sklearn.decomposition import PCA
+
 #.............................Testing.....................................................
 
 img4D = nif.loadNifti('../training/patient001/patient001_4d.nii.gz')
@@ -34,6 +36,162 @@ landMarkedShapes,originalShape = showLand.GenerateSampleShapeList()
 
 landMarkedShapesR = np.stack(landMarkedShapes,axis=0 )
 LandMarkFinalMatrix =landMarkedShapesR.T
+
+
+'''
+pca = PCA()
+eigen = LandMarkFinalMatrix[0,:,:].T
+eigen2 = LandMarkFinalMatrix[1,:,:].T
+reduced = pca.fit(eigen)
+reduced2 = pca.fit(eigen2)
+covX = reduced.get_covariance()
+covY = reduced2.get_covariance()
+CovXY = np.dstack([covX,covY]).T
+eigenVectors = np.linalg.eig(CovXY)
+
+mean_shapex= np.mean(LandMarkFinalMatrix[0],axis=1)
+mean_shapey= np.mean(LandMarkFinalMatrix[1],axis=1)
+
+mean_shape=np.array([mean_shapex,mean_shapey]).T
+
+eigenvector= np.array(eigenVectors[1])   
+eigenvalue= np.array(eigenVectors[0]) 
+
+
+
+    
+for i in range(eigenvector.shape[1]):
+    x= eigenvector[0,:,i]
+    y=eigenvector[1,:,i]
+    xxx=eigenvalue[0,i]
+    yyy=eigenvalue[1,i]
+        
+    b = np.dot(x,xxx)
+    c =np.dot(y,yyy)
+    shapeexample = (mean_shape+ np.vstack((b,c)).T).T
+        
+    plt.axis([-216, 304, -216, 304])
+    plt.plot(shapeexample[0,:],shapeexample[1,:])
+'''    
+        
+'''
+x= eigenvector[0,:,0:1]
+y=eigenvector[1,:,0:1]
+
+#xxx=eigenvalue[0,5:6]
+xxx=np.array([100])
+
+#yyy=eigenvalue[1,5:6]
+yyy=np.array([100])
+
+b = np.dot(x,xxx)
+c =np.dot(y,yyy)
+
+
+shapeexample = (mean_shape+ np.vstack((b,c)).T).T
+
+
+plt.plot(shapeexample[0,:],shapeexample[1,:])
+plt.show()
+'''
+
+print(LandMarkFinalMatrix.shape[0])
+
+mean_shapex= np.mean(LandMarkFinalMatrix[0],axis=1)
+mean_shapey= np.mean(LandMarkFinalMatrix[1],axis=1)
+
+mean_shape=np.array([mean_shapex,mean_shapey]).T
+
+gs=LandMarkFinalMatrix[0,:,2]
+oo=mean_shape[:,0]
+
+#subs=np.subtract(LandMarkFinalMatrix[0,:,2],mean_shape[:,0])
+
+
+#subtract = np.subtract(LandMarkFinalMatrix[0],mean_shape[0])
+
+sub22= []
+for i in range (LandMarkFinalMatrix.shape[2]):
+    sub22.append(np.subtract(LandMarkFinalMatrix[0,:,i],mean_shape[:,0]))
+
+
+hh=np.array(sub22).T
+
+dots=np.dot(hh,hh.T)/LandMarkFinalMatrix.shape[2]
+
+    
+    
+sub23= []
+for i in range (LandMarkFinalMatrix.shape[2]):
+    sub23.append(np.subtract(LandMarkFinalMatrix[1,:,i],mean_shape[:,1]))
+    
+
+hh2=np.array(sub23).T
+
+dots2=np.dot(hh2,hh2.T)/LandMarkFinalMatrix.shape[2]
+
+#var=np.concatenate(dots,dots2)
+covar= np.dstack([dots,dots2]).T
+
+D=np.linalg.eig(covar)
+
+eigenvector= np.array(D[1])   
+eigenvalue= np.array(D[0]) 
+
+
+
+for i in range(eigenvector.shape[1]):
+    x= eigenvector[0,:,i]
+    y=eigenvector[1,:,i]
+    xxx=eigenvalue[0,i]
+    yyy=eigenvalue[1,i]
+        
+    b = np.dot(x,xxx)
+    c =np.dot(y,yyy)
+    shapeexample = (mean_shape+ np.vstack((b,c)).T).T
+        
+    
+    plt.plot(shapeexample[0,:],shapeexample[1,:])
+    plt.show()
+    
+'''    
+x= eigenvector[0,:,0:1]
+y=eigenvector[1,:,0:1]
+
+#xxx=eigenvalue[0,5:6]
+xxx=np.array([100])
+
+#yyy=eigenvalue[1,5:6]
+yyy=np.array([100])
+
+b = np.dot(x,xxx)
+c =np.dot(y,yyy)
+
+
+shapeexample = (mean_shape+ np.vstack((b,c)).T).T
+
+
+plt.plot(shapeexample[0,:],shapeexample[1,:])
+plt.show()
+
+
+'''
+
+#var= np.sum(np.dot(np.subtract()))
+#var = np.sum(np.dot(np.subtract(LandMarkFinalMatrix,mean_shape)),np.subtract(landMarkedShapes,mean_shape).T)
+
+
+#plt.plot(originalShape[0](:,0),originalShape[0](:,1,'+')
+#plt.plot(mean_shapex,mean_shapey,'rs')
+'''
+for i in range (len(originalShape)):
+    plt.axis([-216, 304, -216, 304])
+    x1 = [p[0] for p in originalShape[i]]
+    y1 = [p[1] for p in originalShape[i]]
+    plt.plot(x1,y1,'.')
+'''
+
+
 '''
 for i in range(LandMarkFinalMatrix.shape[1]):
     x1 = LandMarkFinalMatrix[:,i,0]
