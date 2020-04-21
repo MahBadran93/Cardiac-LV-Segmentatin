@@ -12,13 +12,13 @@ import  scipy as sc
 from sklearn.decomposition import PCA
 
 #.............................Testing.....................................................
-
+'''
 img4D = nif.loadNifti('../training/patient001/patient001_4d.nii.gz')
 imgES= nif.loadNifti('../training/patient001/patient001_frame12.nii.gz')
 imgED =nif.loadNifti('../training/patient001/patient001_frame01.nii.gz') 
 imgESGT = nif.loadNifti('../training/patient001/patient001_frame01_gt.nii.gz')
 imgESGT1 = nif.loadNifti('../training/patient002/patient002_frame01_gt.nii.gz')
-
+'''
 #........... Create Training Set...........................
 #print(len(landMarks.getLandMarksCoords()))
 #landMarks.getLandMarksCoords()
@@ -36,6 +36,37 @@ landMarkedShapes,originalShape = showLand.GenerateSampleShapeList()
 
 landMarkedShapesR = np.stack(landMarkedShapes,axis=0 )
 LandMarkFinalMatrix =landMarkedShapesR.T
+
+
+Landmarkcoulmn= np.vstack((LandMarkFinalMatrix[0,:,:],LandMarkFinalMatrix[1,:,:])).T
+
+pca = PCA()
+
+reduced = pca.fit(Landmarkcoulmn)
+cov = reduced.get_covariance()
+eigenVectors =reduced.components_
+eigenvalue=reduced.explained_variance_
+mean_shape=reduced.mean_
+count=0
+
+
+
+for i in range(30):
+    x= eigenVectors[i,:]
+
+    xxx=eigenvalue[i]
+    
+
+    b = np.dot(x,xxx)
+    
+    shapeexample = mean_shape + b
+        
+ #  plt.axis([-216, 304, -216, 304])
+    plt.plot(shapeexample[0:29],shapeexample[30:59],".")
+    plt.show()
+    count +=1
+
+print(count)
 
 
 '''
@@ -94,7 +125,7 @@ shapeexample = (mean_shape+ np.vstack((b,c)).T).T
 plt.plot(shapeexample[0,:],shapeexample[1,:])
 plt.show()
 '''
-
+'''
 print(LandMarkFinalMatrix.shape[0])
 
 mean_shapex= np.mean(LandMarkFinalMatrix[0],axis=1)
@@ -153,7 +184,7 @@ for i in range(eigenvector.shape[1]):
     
     plt.plot(shapeexample[0,:],shapeexample[1,:])
     plt.show()
-    
+'''    
 '''    
 x= eigenvector[0,:,0:1]
 y=eigenvector[1,:,0:1]
@@ -234,28 +265,6 @@ plt.show()
 #pl.figure(figsize=(10,10))
 #_ = pl.plot(poly,'o', color='#f16824')
 """
-def findCentroid(x,y):
-    length = len(x)
-    sum_x = np.sum(x)
-    sum_y = np.sum(y)
-    return np.round(sum_x/length), np.round(sum_y/length) # returm coords of the centroid for each shape 
-
-
-def single_parametric_interpolate(obj_x_loc,obj_y_loc,numPts=60):
-    n = len(obj_x_loc)
-    vi = [[obj_x_loc[(i+1)%n] - obj_x_loc[i],
-         obj_y_loc[(i+1)%n] - obj_y_loc[i]] for i in range(n)]
-    si = [np.linalg.norm(v) for v in vi]
-    di = np.linspace(0, sum(si), numPts, endpoint=False)
-    new_points = []
-    for d in di:
-        for i,s in enumerate(si):
-            if d>s: d -= s
-            else: break
-        l = d/s
-        new_points.append([obj_x_loc[i] + l*vi[i][0],
-                           obj_y_loc[i] + l*vi[i][1]])
-    return new_points
 
 
 """

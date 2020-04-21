@@ -24,7 +24,7 @@ class LandMarks():
         self.fixedCentroidS = []
         self.listOfIndex = []
         self.translatedShape = []
-        self.LandmarkedShapes = []
+        self.LandmarkedShapes = [] # store landmark for all slice 
         
         # reteurn segmented GT image(segment only endocardium) 
     
@@ -125,19 +125,19 @@ class LandMarks():
         listInit = self.getShapeCoords() #return usampled list of shapes        
         for i in range(len(listInit)):
             if(len(listInit[i]) !=0):
-                #plt.figure()
-                x1 = [p[0] for p in listInit[i]]
-                y1 = [p[1] for p in listInit[i]]
+          #       plt.figure()
+          #     x1 = [p[0] for p in listInit[i]]
+          #     y1 = [p[1] for p in listInit[i]]
                 
+                "interpolate the point contour to fit a polygon"
                 poly = Polygon([p[0],p[1]] for p in listInit[i])
-                
                 x,y = poly.convex_hull.exterior.coords.xy
                 
-                
+                "sample each shape ((polygon) with 30 point lanmark"
                 SampledShape = np.array(self.single_parametric_interpolate(x,y,numPts=30))
                 
-                x_sampled = [p[0] for p in SampledShape]
-                y_sampled = [p[1] for p in SampledShape]
+         #       x_sampled = [p[0] for p in SampledShape]
+         #       y_sampled = [p[1] for p in SampledShape]
                 
                 self.LandmarkedShapes.append(SampledShape)
                 
