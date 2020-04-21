@@ -8,10 +8,13 @@ import matplotlib.pyplot as plt
 import SimpleITK as sitk
 from shapely.geometry import Polygon 
 
+<<<<<<< HEAD
 import AlignShape as al
 
 #from scipy.spatial import procrustes
 
+=======
+>>>>>>> master
 
 
 
@@ -69,17 +72,25 @@ class LandMarks():
         #cv2.waitKey(1000)
         self.listOfIndex = np.argwhere(newedgedImg !=0)
         
+<<<<<<< HEAD
         
         
         '''
+=======
+>>>>>>> master
         if(self.count == 1): # create fixed contour
             self.fixedCentroidS = self.findCentroid(self.listOfIndex) # Create fixed Centroid for all iages 
         self.count += 1
         
         if(len(self.listOfIndex) > 2): # to check shapes with points less than 2.
             self.translatedShape = self.translateShapesToFixedCentroid(self.fixedCentroidS,self.listOfIndex)
+<<<<<<< HEAD
         '''
         return self.listOfIndex # return all coordinates of the shape 
+=======
+            
+        return self.translatedShape # return all coordinates of the shape 
+>>>>>>> master
     
     def findCentroid(self, shapeI):
         imgShape = np.array(shapeI)
@@ -96,7 +107,13 @@ class LandMarks():
         
         return translatedShpe # return a translated shape around a specific fixed centroid for all shapes 
       
+<<<<<<< HEAD
   
+=======
+        
+        
+    
+>>>>>>> master
     def getShapeCoords(self):
         path = '../training/'
         for root, dirs, files in os.walk(path): # 100 iteration, num of patients in training Folder
@@ -141,6 +158,7 @@ class LandMarks():
                 "sample each shape ((polygon) with 30 point lanmark"
                 SampledShape = np.array(self.single_parametric_interpolate(x,y,numPts=30))
                 
+<<<<<<< HEAD
                 if i==1:
                     fixshape = SampledShape
 
@@ -154,6 +172,14 @@ class LandMarks():
                     
                 self.LandmarkedShapes.append(SampledShape)
 
+=======
+         #       x_sampled = [p[0] for p in SampledShape]
+         #       y_sampled = [p[1] for p in SampledShape]
+                
+                self.LandmarkedShapes.append(SampledShape)
+                
+                #print(30-len(x))
+>>>>>>> master
                 
                 #plt.axis([-216, 304, -216, 304])
                 #plt.plot(x_sampled,y_sampled)
@@ -169,6 +195,7 @@ class LandMarks():
             else:    
                 print('empty shape')
                 
+<<<<<<< HEAD
                 
         
                 
@@ -183,6 +210,9 @@ class LandMarks():
     
 
 
+=======
+        return self.LandmarkedShapes, listInit   
+>>>>>>> master
 
 
 

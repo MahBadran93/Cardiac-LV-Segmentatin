@@ -31,8 +31,12 @@ imgESGT1 = nif.loadNifti('../training/patient002/patient002_frame01_gt.nii.gz')
 
 showLand = LandMarks()
 #shapeList,shapeCentroids = showLand.getLandMarksCoords()
+<<<<<<< HEAD
 landMarkedShapes,originalShape,drot,MatrixTransform,tdict= showLand.GenerateSampleShapeList()
  
+=======
+landMarkedShapes,originalShape = showLand.GenerateSampleShapeList()
+>>>>>>> master
 
 
 landMarkedShapesR = np.stack(landMarkedShapes,axis=0 )
@@ -215,6 +219,7 @@ plt.show()
 
 #plt.plot(originalShape[0](:,0),originalShape[0](:,1,'+')
 #plt.plot(mean_shapex,mean_shapey,'rs')
+<<<<<<< HEAD
 listTranslated = []
 for i in range(len(landMarkedShapes)):
     rotationM = tdict['rotation']
@@ -230,6 +235,15 @@ for i in range(len(landMarkedShapes)):
     
 
 
+=======
+'''
+for i in range (len(originalShape)):
+    plt.axis([-216, 304, -216, 304])
+    x1 = [p[0] for p in originalShape[i]]
+    y1 = [p[1] for p in originalShape[i]]
+    plt.plot(x1,y1,'.')
+'''
+>>>>>>> master
 
 
 '''

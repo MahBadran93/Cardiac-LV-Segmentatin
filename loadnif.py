@@ -1,22 +1,50 @@
+#important Packages 
 import os
 import nibabel as nib
 import numpy as np 
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 import cv2 
-
-
-
 from nibabel.testing import data_path 
+import pickle as pk 
+import PIL.Image as im
+import SimpleITK as sitk
 
-
-#########################################################################
+#........................Loading the MRI images From Nifti Format..................................
 
 def loadNifti(path): # this class returns nifti image array numpy type
     img1 = nib.load(path)
     trainingImg = img1.get_fdata() # 4d, to show the animated cardiac image
     return trainingImg 
-###########################################################################
+
+def loadNiftSimpleITK(root , file):
+    path =  root + '/' + file 
+    result =  sitk.ReadImage(path)
+    return result
+
+def loadAllNifti(root , file): # this class returns nifti image array numpy type
+    path =  root + '/' + file 
+    img1 = nib.load(path)
+    trainingImg = img1.get_fdata() # 4d, to show the animated cardiac image
+    return trainingImg
+
+#.........................Get Separate Slices.............................................
+
+def getSlice(image,numOfSlice):
+    if(numOfSlice >= image.shape[2]):
+        print("number of slices is only", image.shape[2])
+        return 0
+    else:    
+        return image[:,:,numOfSlice]
+def displaySlices(imageGT,sliceNum):
+    plt.imshow(getSlice(imageGT,sliceNum))
+    plt.show()
+"""
+imageGT : image loaded fron GT file 
+sliceNum : it has 10 slices , from 0-9 
+"""        
+
+#........................ Display the images...................................................
 
 def displayAnimatedNifti(niftiImage, sliceNum1):
     slicePat1 = [] # initalizing a list 
@@ -28,7 +56,6 @@ def displayAnimatedNifti(niftiImage, sliceNum1):
     def updatefig(j):
         im.set_array(slicePat1[j])
         return [im]
-    #axes[0].imshow(niftiImage[:,:,9])   #show segmented slice
     ani = animation.FuncAnimation(fig, updatefig, frames=range(np.array(slicePat1).shape[0]), 
                               interval=50, blit=True)
     plt.show()   
@@ -37,6 +64,7 @@ def displayAnimatedNifti(niftiImage, sliceNum1):
 niftiImage : image loaded from nii.gz file 4d, it has 10 slices, from 0-9 , each slice with 30 frame animation.
 sliceNum1 : number of slice from 0 - 9
 """
+<<<<<<< HEAD
 ##############################################################################
 def displaySlices(imageGT,sliceNum):
     plt.imshow(getSlice(imageGT,sliceNum))
@@ -118,4 +146,6 @@ LoadAllGT()
 
 
 
+=======
+>>>>>>> master
 

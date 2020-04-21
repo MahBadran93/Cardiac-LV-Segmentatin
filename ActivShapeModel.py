@@ -4,19 +4,26 @@ import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 
 
+<<<<<<< HEAD
 
 
 
 
+=======
+>>>>>>> master
 def Build_Model():
     
     
     #object to construct the shape list (1881) images 
     showLand = LandMarks() 
     # return a list of sampled slices (30,1881)
+<<<<<<< HEAD
     landMarkedShapes,originalShape,d,MatrixTransform,t= showLand.GenerateSampleShapeList()
     
     
+=======
+    landMarkedShapes,originalShape = showLand.GenerateSampleShapeList()
+>>>>>>> master
     # convert the list to nunmpy array  (2,30,1881) 
     #which 30 number of point in each shape and 2 is the coordinate
     landMarkedShapesR = np.stack(landMarkedShapes,axis=0 ) 
@@ -62,8 +69,11 @@ def Build_Model():
         plt.show()
         
         
+<<<<<<< HEAD
 Build_Model()
         
+=======
+>>>>>>> master
         
 '''
 print(LandMarkFinalMatrix.shape[0])
