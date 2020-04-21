@@ -27,9 +27,11 @@ for i in range (len(landMarkedShapes)):
 # convert the list to numpy array 
 landMarkedShapesR = np.stack(landMarkedShapes,axis=0)
 landMarkedShapesR2 = np.array(landMarkedShapes).T
+
+# final Matrix of Sampled & aligned shapes, Diminsion (2,30,1788) 
 LandMarkFinalMatrix =landMarkedShapesR.T
 
-# final Matrix of Sampled & aligned shapes, Diminsion (2,1788,30) 
+# Reshape the final matrix to Diminsion (2,1788, 30)
 AlignedMAtrixOfShapes = np.transpose(LandMarkFinalMatrix,(0,2,1)) 
 
 # plot the converted list(Numpy array)
