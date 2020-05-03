@@ -1,4 +1,4 @@
-
+     
 #....................Important Packages........................................
 import loadnif as nif
 import os
@@ -73,7 +73,8 @@ class LandMarks():
         for the endocardium detected contour
 
         '''
-        sampledImgArr = sitk.GetArrayFromImage(gtImage[:,:,sliceNum])
+        # be sure about the transpose here 
+        sampledImgArr = sitk.GetArrayFromImage(gtImage[:,:,sliceNum]).transpose()
         sampledImgArr[:,:][sampledImgArr[:,:] != 3] = 0
         slice1Copy = np.uint8(sampledImgArr[:,:])
         newedgedImg = cv2.Canny(slice1Copy,0,1)
@@ -138,7 +139,7 @@ class LandMarks():
                 "interpolate the point contour to fit a polygon"
                 poly = Polygon([p[0],p[1]] for p in originalShapes[i])
                 x,y = poly.convex_hull.exterior.coords.xy
-                
+
                 "sample each shape ((polygon) with 30 point lanmark"
                 SampledShape = np.array(self.single_parametric_interpolate(x,y,numPts=30))
                 
@@ -159,7 +160,7 @@ class LandMarks():
             
             
                 
-        return self.alignedList, originalShapes 
+        return self.alignedList, originalShapes, self.LandmarkedShapes
     
     
     

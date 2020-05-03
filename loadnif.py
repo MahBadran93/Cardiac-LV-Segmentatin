@@ -15,12 +15,17 @@ import SimpleITK as sitk
 def loadNifti(path): # this class returns nifti image array numpy type
     img1 = nib.load(path)
     trainingImg = img1.get_fdata() # 4d, to show the animated cardiac image
-    return trainingImg 
+    return trainingImg
+
+def loadSimpleITK(path):
+    result =  sitk.ReadImage(path)
+    return result
 
 def loadNiftSimpleITK(root , file):
     path =  root + '/' + file 
     result =  sitk.ReadImage(path)
     return result
+
 
 def loadAllNifti(root , file): # this class returns nifti image array numpy type
     path =  root + '/' + file 
@@ -36,6 +41,14 @@ def getSlice(image,numOfSlice):
         return 0
     else:    
         return image[:,:,numOfSlice]
+    
+def getSliceITK(image,numOfSlice):
+    if(numOfSlice >= image.GetSize()[2]):
+        print("number of slices is only", image.GetSize()[2])
+        return 0
+    else:    
+        return sitk.GetArrayFromImage(image[:,:,numOfSlice] )
+    
 def displaySlices(imageGT,sliceNum):
     plt.imshow(getSlice(imageGT,sliceNum))
     plt.show()
