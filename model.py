@@ -2,60 +2,68 @@ from AutomateLandMarks import  LandMarks
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
-
+ 
 
 def Build_Model():
     
     
-    #object to construct the shape list (1881) images 
-    showLand = LandMarks() 
-    # return a list of sampled slices (30,1881)
-    landMarkedShapes,originalShape = showLand.GenerateSampleShapeList()
-    # convert the list to nunmpy array  (2,30,1881) 
-    #which 30 number of point in each shape and 2 is the coordinate
-    landMarkedShapesR = np.stack(landMarkedShapes,axis=0 ) 
-    LandMarkFinalMatrix =landMarkedShapesR.T
+    # retrun landmark for all shape and save it to CSV file 
+    # showLand = LandMarks()
+    # landMarkedShapes,originalShape, sampledwithoutAlighn= showLand.GenerateSampleShapeList()
+    # np.savetxt("alllandmark.csv" , landMarkedShapes, delimiter=",")
+    # print ("saved done... ")
     
-    '''
-    the	landmark matrices are converted	to landmark	vectors.This means that	
-	30	2-dimensional landmarks	(30,2), a (60,1) column vector	will be obtained. 
-    (2,30,1881) => (1881,60)
-
-    '''
-    Landmarkcoulmn= np.vstack((LandMarkFinalMatrix[0,:,:],LandMarkFinalMatrix[1,:,:])).T
-    
+    # load landmark from alllandmark.Csv file 
+    Landmarkcoulmn= np.genfromtxt("alllandmark.csv", delimiter=",")
     
     pca = PCA()
-    reduced = pca.fit(Landmarkcoulmn)
-    eigenVectors =reduced.components_
-    eigenvalue=reduced.explained_variance_
-    mean_shape=reduced.mean_
+    pca_model = pca.fit(Landmarkcoulmn)
+    eigenVectors =pca_model.components_
+    eigenvalue=pca_model.explained_variance_
+    mean_shape=pca_model.mean_
     
     
     # Find number of modes(eigenvalue) required to describe the most important variance of the data 
-    t = 0 # # store the number of requierd eigen value
+    t = 0
     for i in range(len(eigenvalue)):
       if sum(eigenvalue[:i]) / sum(eigenvalue) < 0.99:
-        t = t + 1
+          t = t + 1
       else: break
   
+    print ("Constructed model with {0} modes of variation".format(t))
     
+  
+    return (t,pca_model,Landmarkcoulmn)
 
-    for i in range(30):
-        x= eigenVectors[i,:]
-    
-        xxx=eigenvalue[i]
-        
-    
-        b = np.dot(x,xxx)
-        
-        shapeexample = mean_shape + b
-            
-     #  plt.axis([-216, 304, -216, 304])
-        plt.plot(shapeexample[0:29],shapeexample[30:59],".")
-        plt.show()
-        
-        
+
+
+
+
+
+  # for i in range(30):
+    #     x= eigenVectors[5,:]
+       
+    #     xxx=eigenvalue[3]
+       
+       
+    #     b = np.dot(x,xxx)
+    #     y = mean_shape + b
+
+    #     plt.axis([-216, 304, -216, 304])
+    #     plt.plot(y[0:29],y[30:59],".")
+    #     plt.show()
+   
+    # return (eigenvalue[:t], eigenVectors[:,:t], mean_shape, t)
+
+
+# x= eigenVectors[5,:]
+   
+# xxx=eigenvalue[3]
+   
+   
+# b = np.dot(x,xxx)
+# y = mean_shape + b
+
         
 '''
 print(LandMarkFinalMatrix.shape[0])

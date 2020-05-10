@@ -72,6 +72,8 @@ def displayAnimatedNifti(niftiImage, sliceNum1):
     ani = animation.FuncAnimation(fig, updatefig, frames=range(np.array(slicePat1).shape[0]), 
                               interval=50, blit=True)
     plt.show()   
+    
+    
 
 """
 niftiImage : image loaded from nii.gz file 4d, it has 10 slices, from 0-9 , each slice with 30 frame animation.
