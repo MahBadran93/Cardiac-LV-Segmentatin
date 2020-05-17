@@ -29,14 +29,24 @@ class ActiveShapeModel(object):
     in: PointDistributionModel pdmodel
         list of gray-level models per resolution level
     '''
-    def __init__(self, pdmodel, glmodel_pyramid):
+    # def __init__(self, pdmodel, glmodel_pyramid):
+    #     self.pdmodel = pdmodel
+    #     self.glmodel_pyramid = glmodel_pyramid
+
+    #     # initialise examining/fitting/aligning classes
+    #     self.fitter = Fitter(pdmodel)
+    #     self.examiner = Examiner(glmodel_pyramid)
+    #     self.aligner = Aligner()
+        
+    def __init__(self, pdmodel):
         self.pdmodel = pdmodel
-        self.glmodel_pyramid = glmodel_pyramid
 
         # initialise examining/fitting/aligning classes
         self.fitter = Fitter(pdmodel)
-        self.examiner = Examiner(glmodel_pyramid)
         self.aligner = Aligner()
+        
+    
+
 
     def multiresolution_search(self, image, region, t=0, max_level=0, max_iter=5, n=None):
         '''
@@ -75,6 +85,7 @@ class ActiveShapeModel(object):
             max_level = False
 
         return region
+    
 
     def search(self, image, region, t=0, level=0, max_level=False, max_iter=5, n=None):
         '''
@@ -91,7 +102,7 @@ class ActiveShapeModel(object):
         out: array points; approximation of the target
         '''
         
-   
+    
         if max_level:
             # get initial parameters
             pose_para = self.aligner.get_pose_parameters(self.pdmodel.mean, region)
@@ -136,6 +147,7 @@ class ActiveShapeModel(object):
                 break
 
         return points
+
 
     def transform(self, pose_para, b):
         '''

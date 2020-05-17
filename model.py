@@ -2,8 +2,74 @@ from AutomateLandMarks import  LandMarks
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
- 
 
+from dentalvision.utils.structure import Shape
+from dentalvision.pdm.gpa import gpa
+from dentalvision.utils.plot import plot
+
+
+ 
+# def create_pdm(shapes):
+#     '''
+#     Create a new point distribution model based on landmark data.
+
+#     Step 1: Generalised Procrustes Analysis on the landmark data
+#     Step 2: Principal Component Analysis on the GPAed landmark data
+#             This process will return an amount of eigenvectors from
+#             which we construct deviations from the mean image.
+#     Step 3: Create a deformable model from the processed data
+
+#     In: list of directories of the landmark data
+#     Out: DeformableModel instance created with preprocessed data.
+#     '''
+#     # perform gpa
+#     mean, aligned = gpa(np.asarray(shapes))
+#     plot('gpa', mean, aligned)
+
+#     # perform PCA
+#     eigenvalues, eigenvectors, m = pca(aligned, mean=mean, max_variance=0.99)
+#     plot('eigenvectors', mean, eigenvectors)
+
+#     # create PointDistributionModel instance
+#     model = PointDistributionModel(eigenvalues, eigenvectors, mean)
+#     plot('deformablemodel', model)
+
+#     return model
+
+
+class PointDistributionModel(object):
+    '''
+    Model created based on a mean image and a matrix
+    of eigenvectors and corresponding eigenvalues.
+    Based on shape parameters, it is able to create a
+    variation on the mean shape.
+
+    Eigenvectors are scaled according to Blanz p.2 eq.7.
+    '''
+    def __init__(self, eigenvalues, eigenvectors, mean):
+        self.dimension = eigenvalues.size
+        self.eigenvalues = eigenvalues
+        self.eigenvectors = eigenvectors
+        self.mean = Shape(mean)
+        
+
+        # create a set of scaled eigenvectors
+        self.scaled_eigenvectors = np.dot(self.eigenvectors, np.diag(self.eigenvalues))
+        
+    def get_mean(self):
+        return self.mean
+    
+
+    def deform(self, shape_param):
+        '''
+        Reconstruct a shape based on principal components and a set of
+        parameters that define a deformable model (see Cootes p. 6 eq. 2)
+
+        in: Tx1 vector deformable model b
+        out: 1xC deformed image
+        '''
+        return Shape(self.mean.vector + self.scaled_eigenvectors.dot(shape_param))
+    
 def Build_Model():
     
     
@@ -20,7 +86,22 @@ def Build_Model():
     pca_model = pca.fit(Landmarkcoulmn)
     eigenVectors =pca_model.components_
     eigenvalue=pca_model.explained_variance_
-    mean_shape=pca_model.mean_
+    mean=pca_model.mean_
+    
+    model = PointDistributionModel(eigenvalue, eigenVectors, mean)
+    
+    #mean, aligned = gpa(np.asarray(Landmarkcoulmn))
+    plot('gpa', mean, Landmarkcoulmn)
+
+    # perform PCA
+ #   eigenvalues, eigenvectors, m = pca(aligned, mean=mean, max_variance=0.99)
+    plot('eigenvectors', mean, eigenVectors)
+
+    # create PointDistributionModel instance
+  #  model = PointDistributionModel(eigenvalues, eigenvectors, mean)
+    plot('deformablemodel', model)
+
+
     
     
     # Find number of modes(eigenvalue) required to describe the most important variance of the data 
@@ -33,7 +114,7 @@ def Build_Model():
     print ("Constructed model with {0} modes of variation".format(t))
     
   
-    return (t,pca_model,Landmarkcoulmn)
+    return model
 
 
 

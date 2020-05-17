@@ -32,7 +32,9 @@ class DataLoader(object):
     def __init__(self):
         self.images = self._load_grayscale_images()
         self.landmarks = self._load_landmarks()
-        self.training_set = [self.images, self.landmarks]
+        #self.training_set = [self.images, self.landmarks]
+        self.training_set = [self.landmarks]
+
         
         
     def get_training(self):
@@ -73,6 +75,40 @@ class DataLoader(object):
         test_set = [test_images, test_landmarks]
 
         return training_set, test_set
+    
+    
+    
+    # def leave_one_out(self, test_index=0):
+    #     '''
+    #     Divides into training and test sets by leaving one image and its
+    #     landmarks out of the training set.
+
+    #     in: int test_index; index to divide training/test
+    #     out: np array images; array with grayscaled images per row
+    #         np array landmarks; array with all landmarks as rows
+    #         list of np arrays landmarks_per_image; array with rows of landmarks
+    #             for each image
+    #     '''
+        
+    #     #training_images = np.delete(self.images,test_index,0)
+
+    #     #training_images = np.asarray(self.images[:test_index] + self.images[:test_index+1])
+    #     test_images = self.images[test_index]
+       
+    #     # create landmark training and test sets
+    #     training_landmark = np.delete(self.landmarks,test_index,0)
+    #     #training_landmark = np.asarray(self.landmarks[:test_index,:] + self.landmarks[:test_index+1,:])
+
+    #     # training_landmarks_per_image = np.vstack((self.landmarks[:test_index], self.landmarks[test_index+1:]))
+
+    #     # training_landmarks = np.vstack(training_landmarks_per_image[:][:])
+    #     test_landmarks = self.landmarks[test_index,:]
+
+
+    #     return training_landmark, test_landmarks, test_images
+    
+    
+    
     
     
     
@@ -173,7 +209,7 @@ class DataLoader(object):
         Needs to be run after _load_grayscale_images()!
         '''
     
-        self.landmarks = np.genfromtxt("alllandmark.csv", delimiter=",")
+        self.landmarks = np.genfromtxt("notalignedalllandmark.csv", delimiter=",")
         print ("load image done...")
         return self.landmarks
         

@@ -34,8 +34,26 @@ class Profiler(object):
         # sample along the normal
         # print ("normal " , self.normal)
         return self._sample(points[1])
+    
+    
+    def sample_1(self, a,b ,c ):
+        '''
+        Get a sample from self.k points on each side of the normal between
+        the triple in points.
+
+        in: triple previous_point, point, and next_point
+        out: list of tuples along the normal through point
+        '''
+        # compute the normal
+        self.normal = self._compute_normal_1(a,b,c)
+        
+        # sample along the normal
+        # print ("normal " , self.normal)
+        return self._sample(a)
+
 
     def profile(self, image, points):
+        
         '''
         Compute the distance to normal for each pixel in frame. Return the
         greyscale intensity of the 2k+1 nearest pixels to normal.
@@ -76,12 +94,24 @@ class Profiler(object):
 
         return np.array(negatives + start + positives)
 
+
     def _compute_normal(self, points):
         '''
         Compute the normal between three points.
         '''
         prev, curr, nex = points
         return self._normal(prev, nex)
+
+    
+    def _compute_normal_1(self, a,b,c):
+        '''
+        Compute the normal between three points.
+        '''
+        
+        prev , nex = a, c
+        return self._normal(prev, nex)    
+    
+    
 
     def _normal(self, a, b):
         '''
