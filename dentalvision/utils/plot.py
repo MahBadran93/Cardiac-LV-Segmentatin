@@ -73,10 +73,11 @@ def plot_deformablemodel(model):
     plt.plot(mode.x, mode.y)
 
     # create variations
-    z[0] = 0.8
+    
+    z[0] = 0.3
     var = model.deform(z)
     z[0] = 0
-    z[1] = 0.8
+    z[1] = 0.3
     var2 = model.deform(z)
     
     plt.plot(var.x, var.y, marker='o')

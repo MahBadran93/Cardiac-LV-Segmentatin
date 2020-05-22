@@ -30,7 +30,7 @@ class LandMarks():
         self.alignedList = []
         self.Landmarkcoulmn=[]
         
-    def procrustes(self,X, Y, scaling=False, reflection='best'):
+    def procrustes(self,X, Y, scaling=True, reflection='best'):
         """
         A port of MATLAB's `procrustes` function to Numpy.
     

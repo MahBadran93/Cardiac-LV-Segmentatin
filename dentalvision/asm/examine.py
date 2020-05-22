@@ -2,6 +2,7 @@ import numpy as np
 
 from dentalvision.glm.profile import Profiler
 from dentalvision.utils.structure import Shape
+import matplotlib.pyplot as plt
 
 
 class Examiner(object):
@@ -31,10 +32,8 @@ class Examiner(object):
             int t amount of pixels examined either side of the normal (t > k)
         out: Shape with adjustments (dx, dy) to better approximate target
         '''
-        print("model_points.shape", model_points)
         if not isinstance(model_points, Shape):
             model_points = Shape(model_points)
-            print("model_points.shape", model_points)
             
         
         new_points = model_points.matrix
@@ -52,8 +51,7 @@ class Examiner(object):
             glmodel.set_evaluation_index(m-1)
             # choose model points according to pyramid level
             prev, curr, nex = m-2, m-1, m
-            newPointTest = model_points.matrix/ reduction
-            reduced_points = Shape(newPointTest)
+            reduced_points = Shape(model_points.vector/reduction)
             # get current, previous and next
             points = np.array([reduced_points.get(prev), reduced_points.get(curr), reduced_points.get(nex)])
             # get point that best matches gray levels
@@ -76,6 +74,9 @@ class Examiner(object):
         # initiate point as best match and its distance
         best_match = points[0, :]
         point_profile = glmodel.profile(self.image, points)
+        # plt.imshow(self.image)
+        # plt.plot(points[:,0],points[:,1])
+        # plt.show()
         distance = glmodel.evaluate(point_profile)
         # keep track of amount of movement
         nonmoving = 1

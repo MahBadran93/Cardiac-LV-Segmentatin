@@ -6,6 +6,7 @@ each landmark. Instead of using actual grey levels, normalised derivatives are
 used. The Mahalanobis distance is used as an evaluation measure.
 '''
 import numpy as np
+import matplotlib.pyplot as plt 
 
 from dentalvision.glm.profile import Profiler
 
@@ -102,18 +103,25 @@ class GrayLevelModel(object):
         out: matrix of profiles per landmark
         '''
         # create a zero matrix for all profiles per landmark
-        profiles = np.zeros((int(shapes.shape[1]/2), images.shape[0], 2*self.k))
+        profiles = np.zeros((int(shapes.shape[1]), images.shape[0], 2*self.k))
         
         # iterate over all images, all shapes, and all landmarks to extract grey-level profiles
         for i in range(len(images)):
             # transpose image to be able to place correct coordinates (x, y)
             image = images[i].T
             shape = np.vstack(np.split(shapes[i], 2))
+            # plt.plot(shape[0,:],shape[1,:])
+            # plt.show()
             for l in range(shape.shape[1]):
                 # make grayscale profile for each landmark couple
                 profile = self.profile(image, (shape[:, l-2], shape[:, l-1], shape[:, l]))
                 # normalize and derive profile
+                # print(profile.shape)
                 profiles[l-1, i, :] = profile
+        # print (profiles.shape)        
+        # plt.imshow(image)
+        # plt.plot(profile)
+        # plt.show()
         
         return profiles
 

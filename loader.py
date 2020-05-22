@@ -5,6 +5,7 @@ import numpy as np
 from dentalvision.utils.structure import Shape
 import loadnif as nif
 import SimpleITK as sitk
+import matplotlib.pyplot as plt 
 
 
 # =============================================================================
@@ -34,8 +35,8 @@ class DataLoader(object):
         self.landmarks = self._load_landmarks()
         #self.training_set = [self.images, self.landmarks]
         self.training_set = [self.landmarks]
-
         
+      
         
     def get_training(self):
         return self.training_set
@@ -209,7 +210,7 @@ class DataLoader(object):
         Needs to be run after _load_grayscale_images()!
         '''
     
-        self.landmarks = np.genfromtxt("notalignedalllandmark.csv", delimiter=",")
+        self.landmarks = np.genfromtxt("NotAlignedlandmark.csv", delimiter=",")
         print ("load image done...")
         return self.landmarks
         

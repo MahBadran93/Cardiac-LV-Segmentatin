@@ -42,6 +42,15 @@ def getSlice(image,numOfSlice):
     else:    
         return image[:,:,numOfSlice]
     
+def getNotNumpySliceITK(image,numOfSlice):
+    
+    if(numOfSlice >= image.GetSize()[2]):
+        print("number of slices is only", image.GetSize()[2])
+        return 0
+    else:    
+    
+        return image[:,:,numOfSlice]
+    
 def getSliceITK(image,numOfSlice):
     if(numOfSlice >= image.GetSize()[2]):
         print("number of slices is only", image.GetSize()[2])

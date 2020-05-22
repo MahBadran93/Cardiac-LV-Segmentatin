@@ -14,6 +14,8 @@ from dentalvision.utils.structure import Shape
 from dentalvision.utils.multiresolution import gaussian_pyramid
 
 import matplotlib.pyplot as plt
+from dentalvision.utils import plot
+
 
 # from utils import plot
 
@@ -29,21 +31,21 @@ class ActiveShapeModel(object):
     in: PointDistributionModel pdmodel
         list of gray-level models per resolution level
     '''
-    # def __init__(self, pdmodel, glmodel_pyramid):
-    #     self.pdmodel = pdmodel
-    #     self.glmodel_pyramid = glmodel_pyramid
-
-    #     # initialise examining/fitting/aligning classes
-    #     self.fitter = Fitter(pdmodel)
-    #     self.examiner = Examiner(glmodel_pyramid)
-    #     self.aligner = Aligner()
-        
-    def __init__(self, pdmodel):
+    def __init__(self, pdmodel, glmodel_pyramid):
         self.pdmodel = pdmodel
+        self.glmodel_pyramid = glmodel_pyramid
 
         # initialise examining/fitting/aligning classes
         self.fitter = Fitter(pdmodel)
+        self.examiner = Examiner(glmodel_pyramid)
         self.aligner = Aligner()
+        
+    # def __init__(self, pdmodel):
+    #     self.pdmodel = pdmodel
+
+    #     # initialise examining/fitting/aligning classes
+    #     self.fitter = Fitter(pdmodel)
+    #     self.aligner = Aligner()
         
     
 
@@ -63,7 +65,6 @@ class ActiveShapeModel(object):
         out: Shape region; approximation of the target
         '''
         if not isinstance(region, Shape):
-            print("are you here ")
 
             region = Shape(region)
 
@@ -75,6 +76,8 @@ class ActiveShapeModel(object):
 
         level = max_level
         max_level = True
+          
+     
         while level >= 0:
             # get image at level resolution
             image = image_pyramid[level]
@@ -83,6 +86,8 @@ class ActiveShapeModel(object):
             # descend the pyramid
             level -= 1
             max_level = False
+            
+        
 
         return region
     
@@ -120,10 +125,11 @@ class ActiveShapeModel(object):
         # perform algorithm
         i = 0
         movement = np.zeros_like(points.length)
-        while np.sum(movement)/points.length <= 0.6:
+        while np.sum(movement)/points.length <= 0.5:
             # examine t pixels on the normals of all points in the model
-            # plot.render_shape_to_image(image, points)
+           # plot.render_shape_to_image(np.uint8(image), points)
             adjustments, movement = self.examiner.examine(points, t=t, pyramid_level=level)
+            
             # find the best parameters to fit the model to the examined points
             pose_para, c = self.fitter.fit(points, adjustments, pyramid_level=level, n=n)
             # add constraints to the shape parameter

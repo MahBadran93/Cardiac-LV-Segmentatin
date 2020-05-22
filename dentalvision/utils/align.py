@@ -47,6 +47,7 @@ class CoreAlign(object):
         '''
         # normalize target to avoid multiple scaling
         target = self.normalize(target)
+        print (pose_parameters)
         # get pose parameters and perform transformations
         Tx, Ty, s, theta = pose_parameters
         scaled_and_rotated = self.scale_and_rotate(target, s, theta)

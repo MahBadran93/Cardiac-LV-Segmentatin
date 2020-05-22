@@ -4,6 +4,9 @@ Build a grey-level profile length 2k+1 along the normal to a point.
 import math
 import numpy as np
 
+import matplotlib.pyplot as plt
+
+
 
 class Profiler(object):
     '''
@@ -64,9 +67,13 @@ class Profiler(object):
 
         # print ("prooooofile", image.shape, image[0.15632709.astype(int) ,-0.98770534.astype(int)])
     
-        
+        # plt.imshow(image)
+        # plt.plot(points[0],points[1])
         greys = np.asarray([float(image[r.astype(np.int), c.astype(np.int)]) for r, c in self.sample(points)])
-        return self._normalize(self._derive(greys))
+        
+        cc=self._normalize(self._derive(greys))
+        
+        return cc
 
     def _sample(self, starting_point):
         '''
